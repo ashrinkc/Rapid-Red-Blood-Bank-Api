@@ -13,6 +13,11 @@ interface Donor extends User{
     bloodType:string
 }
 
+interface Organization extends User{
+    address: string,
+    status: string,
+}
+
 const userSchema = new Schema({
     email:{
         type:String,
@@ -29,7 +34,7 @@ const userSchema = new Schema({
     userType:{
         type:String,
         required:true,
-        enum:['donor','patient','hospital']
+        enum:['donor','patient','organization']
     },
     contact:{
         type:String
@@ -47,4 +52,19 @@ const DonorModel = UserModel.discriminator<Donor>('donor',new Schema({
     }
 }))
 
-export default {UserModel,DonorModel}
+const OrganizationModel = UserModel.discriminator<Organization>('organization',new Schema({
+    donorId:{
+        type:mongoose.Schema.Types.ObjectId,
+    },
+    address:{
+        type: String,
+        required: true
+    },
+    status:{
+        type: String,
+        default: 'open',
+        enum:['open','pending','rejected']
+    }
+}))
+
+export default {UserModel,DonorModel,OrganizationModel}
