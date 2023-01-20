@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import dotenv from 'dotenv'
+import DonorRequest from "../models/Request";
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -30,6 +31,7 @@ export const organizationRegister = async(req:Request,res:Response)=>{
 }
 
 export const getAllOrganization = async(req:Request,res:Response)=>{
+    const donorId = req.params.id
     try{
         // const organization = await User.UserModel.find({userType:'organization'})
         const organization = await User.UserModel.aggregate([
@@ -39,7 +41,28 @@ export const getAllOrganization = async(req:Request,res:Response)=>{
                 }
             }
         ])
-        res.status(200).send(organization)
+        const donorRequests = await DonorRequest.find({donorId})
+        //create array to store the organizations with status of the request
+        const data:any = []
+        //loop through the organizations
+        organization.forEach((organization)=>{
+            //find the corresponding request for the current organization
+            const request = donorRequests.find((r)=>r.organizationId.toString() === organization._id.toString())
+            //if there is a request add the status of the request
+            if(request){
+                data.push({
+                    ...organization,
+                    status: request.status
+                })
+            }else{
+                //if the is no request add with default status of open
+                data.push({
+                    ...organization,
+                    status: 'open'
+                })
+            }   
+        })
+        res.status(200).send(data)
     }catch(err){
         console.log(err)
         res.sendStatus(500)

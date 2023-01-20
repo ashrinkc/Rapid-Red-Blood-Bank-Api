@@ -5,5 +5,5 @@ const organizationRoute = Router()
 
 organizationRoute.post('/registerOrganization',organizationRegister)
 organizationRoute.post('/loginOrganization',organizationLogin)
-organizationRoute.get('/getAllOrganization',getAllOrganization)
+organizationRoute.get('/getAllOrganization/:id',getAllOrganization)
 export default organizationRoute

@@ -1,5 +1,5 @@
 import { Response, Request } from "express";
-import RequestU from "../models/Request";
+import DonorRequest from "../models/Request";
 import User from "../models/User";
 
 export const bloodRequests = async(req:Request,res:Response) =>{
@@ -9,7 +9,7 @@ export const bloodRequests = async(req:Request,res:Response) =>{
         // const organization:any = await User.OrganizationModel.findById(req.body.organizationId)
         const donorId = req.params.id
         const organizationId = req.body
-        const request = new RequestU({donorId,organizationId,...req.body})
+        const request = new DonorRequest({donorId,organizationId,...req.body})
         await request.save()
         res.status(201).send({ success:true, message: 'Request sent successfully' });
     }catch(err){
@@ -21,7 +21,7 @@ export const bloodRequests = async(req:Request,res:Response) =>{
 export const getDonationRequests = async(req:Request,res:Response)=>{
     try{
         const organizationId = req.params.id
-        const requests = await RequestU.find({organizationId}).populate("donorId",["email","name"])
+        const requests = await DonorRequest.find({organizationId}).populate("donorId",["email","name","bloodType","contact"])
         res.status(200).send(requests)
     }catch(err){
         console.log(err)

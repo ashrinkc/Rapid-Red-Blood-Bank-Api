@@ -14,8 +14,8 @@ interface Donor extends User{
 }
 
 interface Organization extends User{
+    donorId: mongoose.Schema.Types.ObjectId
     address: string,
-    status: string,
 }
 
 const userSchema = new Schema({
@@ -60,11 +60,8 @@ const OrganizationModel = UserModel.discriminator<Organization>('organization',n
         type: String,
         required: true
     },
-    status:{
-        type: String,
-        default: 'open',
-        enum:['open','pending','rejected']
-    }
 }))
 
-export default {UserModel,DonorModel,OrganizationModel}
+const PatientModel = UserModel.discriminator('patient',new Schema({}));
+
+export default {UserModel,DonorModel,OrganizationModel,PatientModel}
