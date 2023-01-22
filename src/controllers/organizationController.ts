@@ -69,6 +69,22 @@ export const getAllOrganization = async(req:Request,res:Response)=>{
     }
 }
 
+export const getPatientOrganization = async(req:Request,res:Response)=>{
+    try{
+        const organization = await User.UserModel.aggregate([
+            {
+                $match:{
+                    userType:'organization'
+                }
+            }
+        ])
+        res.status(200).send(organization)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const updateStatus = async(req:Request,res:Response)=>{
     try{
         

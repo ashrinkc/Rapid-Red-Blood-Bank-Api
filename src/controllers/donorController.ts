@@ -28,3 +28,19 @@ export const donorRegister = async(req:Request,res:Response)=>{
         res.sendStatus(500)
     }
 }
+
+export const getAllDonor = async(req:Request,res:Response)=>{
+    try{
+        const donor = await User.UserModel.aggregate([
+            {
+                $match:{
+                    userType:'donor'
+                }
+            }
+        ])
+        res.status(200).send(donor)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
