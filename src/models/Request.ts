@@ -38,6 +38,8 @@ const requestSchema = new Schema({
         default:'pending',
         enum:['pending', 'approved', 'rejected']
     }
+},{
+    timestamps:true
 })
 
 const requestModel = mongoose.model<Request>('Request',requestSchema)
