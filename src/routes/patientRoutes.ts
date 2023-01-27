@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { patientLogin, patientRegister } from "../controllers/patientController";
+import { getAllPatient, patientLogin, patientRegister } from "../controllers/patientController";
 
 const patientRoute = Router()
 
 patientRoute.post('/registerPatient',patientRegister)
 patientRoute.post('/loginPatient',patientLogin)
-
+patientRoute.get('/getAllPatient',getAllPatient)
 export default patientRoute

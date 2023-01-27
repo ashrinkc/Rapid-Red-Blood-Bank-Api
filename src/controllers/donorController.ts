@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import User from "../models/User";
 import dotenv from 'dotenv'
+import mongoose, { Types, ObjectId } from "mongoose";
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -31,13 +32,19 @@ export const donorRegister = async(req:Request,res:Response)=>{
 
 export const getAllDonor = async(req:Request,res:Response)=>{
     try{
-        const donor = await User.UserModel.aggregate([
+        let donor: any;
+        if(req.query.userId){
+            donor = await User.UserModel.findOne({_id: req.query.userId, userType: 'donor'})
+            .select('-password');
+        }else{
+            donor = await User.UserModel.aggregate([
             {
                 $match:{
                     userType:'donor'
                 }
             }
-        ])
+            ])
+        }
         res.status(200).send(donor)
     }catch(err){
         console.log(err)

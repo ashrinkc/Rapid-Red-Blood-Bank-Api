@@ -28,3 +28,25 @@ export const patientRegister = async(req:Request,res:Response)=>{
         res.sendStatus(500)
     }
 }
+
+export const getAllPatient = async(req:Request,res:Response)=>{
+    try{
+        let patient: any;
+        if(req.query.userId){
+            patient = await User.UserModel.findOne({_id: req.query.userId, userType: 'patient'})
+            .select('-password');
+        }else{
+            patient = await User.UserModel.aggregate([
+            {
+                $match:{
+                    userType:'patient'
+                }
+            }
+            ])
+        }
+        res.status(200).send(patient)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
