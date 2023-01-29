@@ -1,5 +1,8 @@
 import mongoose,{mongo,Schema} from 'mongoose'
 
+interface Conversation{
+    member:[]
+}
 
 const conversationSchema = new Schema({
     member:{
@@ -9,6 +12,6 @@ const conversationSchema = new Schema({
     timestamps:true
 })
 
-const conversationModel = mongoose.model('Conversation',conversationSchema)
+const conversationModel = mongoose.model<Conversation>('Conversation',conversationSchema)
 
 export default conversationModel

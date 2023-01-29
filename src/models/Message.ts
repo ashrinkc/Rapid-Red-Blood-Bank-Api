@@ -1,5 +1,10 @@
 import mongoose,{mongo,Schema} from 'mongoose'
 
+interface Message{
+    conversationId:string,
+    sender:string,
+    text:string
+}
 
 const messageSchema = new Schema({
     conversationId:{
@@ -15,6 +20,6 @@ const messageSchema = new Schema({
     timestamps:true
 })
 
-const messageModel = mongoose.model('Message',messageSchema)
+const messageModel = mongoose.model<Message>('Message',messageSchema)
 
 export default messageModel
