@@ -53,9 +53,9 @@ const DonorModel = UserModel.discriminator<Donor>('donor',new Schema({
 }))
 
 const OrganizationModel = UserModel.discriminator<Organization>('organization',new Schema({
-    donorId:{
-        type:mongoose.Schema.Types.ObjectId,
-    },
+    // donorId:{
+    //     type:mongoose.Schema.Types.ObjectId,
+    // },
     address:{
         type: String,
         required: true

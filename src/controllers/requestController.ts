@@ -1,4 +1,5 @@
 import { Response, Request } from "express";
+import mongoose from "mongoose";
 import DonorRequest from "../models/Request";
 import User from "../models/User";
 
@@ -6,12 +7,12 @@ export const bloodRequests = async(req:Request,res:Response) =>{
     try{
         //find the donor by their id
         // const donor:any = await User.DonorModel.findById(req.params.id)
-        // const organization:any = await User.OrganizationModel.findById(req.body.organizationId)
+        // const organization:any = await User.OrganizationModel.findById(req.body.organizationId.id)
         const donorId = req.params.id
-        const organizationId = req.body
-        const request = new DonorRequest({donorId,organizationId,...req.body})
-        await request.save()
-        res.status(201).send({ success:true, message: 'Request sent successfully' });
+        const organizationId = req.query.organizationId;
+        const request = new DonorRequest({ donorId, organizationId, ...req.body });
+        await request.save();
+        res.status(201).send({ success: true, message: 'Request sent successfully' });
     }catch(err){
         console.log(err)
         res.sendStatus(500)

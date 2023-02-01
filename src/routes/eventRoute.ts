@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { addEvents, getAllEvents } from "../controllers/eventController";
+import { addEvents, eventVolunteer, getAllEvents } from "../controllers/eventController";
 
 const eventRoute = Router()
 
 eventRoute.post('/',addEvents)
 eventRoute.get('/',getAllEvents)
-
+eventRoute.post('/volunteer/:id',eventVolunteer)
 export default eventRoute
