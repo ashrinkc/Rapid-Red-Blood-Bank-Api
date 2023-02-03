@@ -1,9 +1,10 @@
 import { Response, Request } from "express";
 import mongoose from "mongoose";
+import PatientRequest from "../models/PatientRequest";
 import DonorRequest from "../models/Request";
 import User from "../models/User";
 
-export const bloodRequests = async(req:Request,res:Response) =>{
+export const bloodDonationRequests = async(req:Request,res:Response) =>{
     try{
         //find the donor by their id
         // const donor:any = await User.DonorModel.findById(req.params.id)
@@ -23,6 +24,40 @@ export const getDonationRequests = async(req:Request,res:Response)=>{
     try{
         const organizationId = req.params.id
         const requests = await DonorRequest.find({organizationId}).populate("donorId",["email","name","bloodType","contact"])
+        res.status(200).send(requests)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const patientBloodRequest = async(req:Request,res:Response) =>{
+    try{
+        const patientId = req.params.id
+        const request = new PatientRequest({patientId,...req.body});
+        await request.save()
+        res.status(201).send({success:true,message:"Request sent successfully"})
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const getPatientBloodRequestsDonor = async(req:Request,res:Response) =>{
+    try{
+        const donorId = req.params.id   
+        const requests = await PatientRequest.find({donorId}).populate("patientId",["email","name","contact"])
+        res.status(200).send(requests)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const getPatientsBloodRequestsBloodBank = async(req:Request,res:Response)=>{
+    try{
+        const organizationId = req.params.id
+        const requests = await PatientRequest.find({organizationId}).populate("patientId",["email","name","contact"])
         res.status(200).send(requests)
     }catch(err){
         console.log(err)
