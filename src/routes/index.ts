@@ -1,4 +1,5 @@
 import { Application, Request, Response } from "express";
+import adminRoute from "./adminRoute";
 import conversationRoute from "./conversationRoute";
 import donorRoute from "./donorRoutes";
 import eventRoute from "./eventRoute";
@@ -12,6 +13,7 @@ const routesSetup = (app:Application) =>{
     app.use('/api/donor',donorRoute)
     app.use('/api/organization',organizationRoute)
     app.use('/api/patient',patientRoute)
+    app.use('/api/admin',adminRoute)
     app.use('/api/request',requestRoute)
     app.use('/api/conversations',conversationRoute)
     app.use('/api/message',messageRoute)

@@ -6,8 +6,8 @@ dotenv.config()
 const JWT_SECRET = process.env.JWT_SECRET
 export const patientLogin = async(req:Request,res:Response)=>{
     try{
-        const {username,password} = req.body
-        const user = await User.UserModel.findOne({username,password})
+        const {email,password} = req.body
+        const user = await User.UserModel.findOne({email,password})
         if(!user){
             res.status(400).send({success:false,message:"Invalid username or password"})
             return
