@@ -51,3 +51,22 @@ export const getAllDonor = async(req:Request,res:Response)=>{
         res.sendStatus(500)
     }
 }
+
+export const deleteDonor = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        const user = await User.UserModel.findById(id)
+        if(!user){
+            res.sendStatus(400);
+            return;
+        }
+        if(user.userType !== "donor"){
+            res.sendStatus(400);
+            return;
+        }
+        await user.delete()
+        res.status(200).send({success:true,message:"User successfully deleted"})
+    }catch(err){
+        console.log(err)
+    }
+}

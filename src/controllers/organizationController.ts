@@ -85,6 +85,25 @@ export const getPatientOrganization = async(req:Request,res:Response)=>{
     }
 }
 
+export const deleteOrganization = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        const user = await User.UserModel.findById(id)
+        if(!user){
+            res.sendStatus(400);
+            return;
+        }
+        if(user.userType !== "organization"){
+            res.sendStatus(400);
+            return;
+        }
+        await user.delete()
+        res.status(200).send({success:true,message:"User successfully deleted"})
+    }catch(err){
+        console.log(err)
+    }
+}
+
 export const updateStatus = async(req:Request,res:Response)=>{
     try{
         

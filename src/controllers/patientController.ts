@@ -50,3 +50,45 @@ export const getAllPatient = async(req:Request,res:Response)=>{
         res.sendStatus(500)
     }
 }
+
+export const deletePatient = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        // const user = await User.UserModel.aggregate([
+        //     {
+        //         $match:{
+        //             _id:id,
+        //             userType:"patient"
+        //         }
+        //     },
+        //     {
+        //         $project:{
+        //             _id:1
+        //         }
+        //     },
+        //     {
+        //         $limit:1
+        //     }
+        // ])
+        // if(user.length === 0){
+        //     res.sendStatus(400);
+        //     return;
+        // }
+        // await User.UserModel.deleteOne({_id:id})
+        // res.status(200).send({success:true,message:"user successfully deleted"})
+        const user = await User.UserModel.findById(id);
+        if (!user) {
+            res.sendStatus(404);
+            return;
+        }
+        if (user.userType !== "patient") {
+            res.sendStatus(400);
+            return;
+        }
+        await user.delete()
+        res.status(200).send({success:true,message:"user successfully deleted"})
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
