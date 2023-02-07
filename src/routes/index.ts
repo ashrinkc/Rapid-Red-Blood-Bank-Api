@@ -3,6 +3,7 @@ import adminRoute from "./adminRoute";
 import conversationRoute from "./conversationRoute";
 import donorRoute from "./donorRoutes";
 import eventRoute from "./eventRoute";
+import feedbackRoute from "./feedbackRoute";
 import messageRoute from "./messageRoute";
 import organizationRoute from "./organizationRoutes";
 import patientRoute from "./patientRoutes";
@@ -18,6 +19,7 @@ const routesSetup = (app:Application) =>{
     app.use('/api/conversations',conversationRoute)
     app.use('/api/message',messageRoute)
     app.use('/api/events',eventRoute)
+    app.use('/api/feedback',feedbackRoute)
 }
 
 export default routesSetup
