@@ -46,10 +46,11 @@ const configureApplication = async() =>{
         //send and get message
         socket.on("sendMessage",({senderId,receiverId,text}:any)=>{
             const user = getUser(receiverId)
+            if (user && user.socketId){
             io.to(user.socketId).emit("getMessage",{
                 senderId,
                 text
-            })
+            })}
         })
 
         //when disconnect
