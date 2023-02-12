@@ -37,7 +37,8 @@ const userSchema = new Schema({
         enum:['donor','patient','organization']
     },
     contact:{
-        type:String
+        type:String,
+        required:true
     }
 }, { 
     discriminatorKey: 'userType',

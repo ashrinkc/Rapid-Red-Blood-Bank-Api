@@ -1,6 +1,7 @@
 import { Application, Request, Response } from "express";
 import adminRoute from "./adminRoute";
 import conversationRoute from "./conversationRoute";
+import donationnRoute from "./donationRoute";
 import donorRoute from "./donorRoutes";
 import eventRoute from "./eventRoute";
 import feedbackRoute from "./feedbackRoute";
@@ -20,6 +21,7 @@ const routesSetup = (app:Application) =>{
     app.use('/api/message',messageRoute)
     app.use('/api/events',eventRoute)
     app.use('/api/feedback',feedbackRoute)
+    app.use('/api/donation',donationnRoute)
 }
 
 export default routesSetup
