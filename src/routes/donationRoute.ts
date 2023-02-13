@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { donationRequest } from "../controllers/donationController";
+import { donationPayment, donationRequest, getAllDonationRequest } from "../controllers/donationController";
 
-const donationnRoute = Router()
+const donationRoute = Router()
 
-donationnRoute.post('/request',donationRequest)
-
-export default donationnRoute
+donationRoute.post('/request',donationRequest)
+donationRoute.get('/',getAllDonationRequest)
+donationRoute.post('/payment',donationPayment)
+export default donationRoute
