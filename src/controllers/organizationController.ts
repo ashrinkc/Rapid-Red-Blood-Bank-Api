@@ -48,6 +48,7 @@ export const getAllOrganization = async(req:Request,res:Response)=>{
         organization.forEach((organization)=>{
             //find the corresponding request for the current organization
             const request = donorRequests.find((r)=>r.organizationId.toString() === organization._id.toString())
+        
             //if there is a request add the status of the request
             if(request){
                 data.push({

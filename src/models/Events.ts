@@ -6,6 +6,8 @@ export interface IEvent{
     eventName:string,
     eventLocation:string,
     eventOrganizer:string,
+    maxVolunteers:number,
+    totalVolunteers:number,
     eventDescription:string,
     eventTime:Date
 }
@@ -26,6 +28,13 @@ const eventSchema = new Schema({
     },
     eventOrganizer:{
         type:String
+    },
+    maxVolunteers:{
+        type:Number
+    },
+    totalVolunteers:{
+        type:Number,
+        default:0
     },
     eventDescription:{
         type:String,
