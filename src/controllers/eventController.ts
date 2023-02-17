@@ -63,10 +63,24 @@ export const eventVolunteer = async(req:Request,res:Response)=>{
 
 export const getEventVolunteer = async(req:Request,res:Response)=>{
     try{
-        const organizationId = req.params.id
-        const volunteers = await Volunteer.find({organizationId})
-        console.log(volunteers)
-        res.status(201).send(volunteers)
+        const eventId = req.params.id
+        const volunteers = await Volunteer.find({eventId}).populate('volunteerId','name')
+        const formattedVolunteers = volunteers.map((volunteer:any)=>{
+            return{
+                name:volunteer.volunteerId.name,
+                _id:volunteer._id,
+                address:volunteer.address,
+                age:volunteer.age,
+                gender:volunteer.gender,
+                nationality:volunteer.nationality,
+                skillSet:volunteer.skillSet,
+                training:volunteer.training,
+                eventId:volunteer.eventId,
+                organizationId:volunteer.organizationId,
+                status:volunteer.status
+            }
+        })
+        res.status(201).send(formattedVolunteers)
     }catch(err){
         console.log(err)
         res.sendStatus(500)
@@ -77,6 +91,42 @@ export const getEventsById = async(req:Request,res:Response)=>{
         const orgId = req.params.id
         const event = await Event.find({organizationId:orgId})
         res.status(201).send(event)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const acceptVolunteer = async(req:Request,res:Response)=>{
+    try{
+        const volunteerId = req.params.id
+        const eventId = req.body.id
+        const volunteer = await Volunteer.findById(volunteerId)
+        if(volunteer){
+            volunteer.status = "approved"
+            await volunteer.save()
+        }
+        const event = await Event.findById(eventId)
+        if(event){
+            event.totalVolunteers += 1
+            await event.save()
+        }
+        res.status(200).send("Volunteer accepted")
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const rejectVolunteer = async(req:Request,res:Response)=>{
+    try{
+        const volunteerId = req.params.id
+        const volunteer = await Volunteer.findById(volunteerId)
+        if(volunteer){
+            volunteer.status = "rejected"
+            await volunteer.save()
+        }
+        res.status(200).send("Volunteer rejected")
     }catch(err){
         console.log(err)
         res.sendStatus(500)
