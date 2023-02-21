@@ -70,6 +70,17 @@ export const getAllOrganization = async(req:Request,res:Response)=>{
     }
 }
 
+export const updateOrganization = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        const user = await User.OrganizationModel.findByIdAndUpdate(id,req.body)
+        res.status(200).send({success:true,message:"user successfully updated",user})
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const getPatientOrganization = async(req:Request,res:Response)=>{
     try{
         const organization = await User.UserModel.aggregate([

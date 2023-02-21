@@ -51,6 +51,17 @@ export const getAllPatient = async(req:Request,res:Response)=>{
     }
 }
 
+export const updatePatient = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        const user = await User.PatientModel.findByIdAndUpdate(id,req.body)
+        res.status(200).send({success:true,message:"user successfully updated",user})
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const deletePatient = async(req:Request,res:Response)=>{
     try{
         const id = req.params.id

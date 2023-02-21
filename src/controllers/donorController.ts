@@ -52,6 +52,17 @@ export const getAllDonor = async(req:Request,res:Response)=>{
     }
 }
 
+export const updateDonor = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        const user = await User.DonorModel.findByIdAndUpdate(id,req.body)
+        res.status(200).send({success:true,message:"user successfully updated",user})
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const deleteDonor = async(req:Request,res:Response)=>{
     try{
         const id = req.params.id
