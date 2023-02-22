@@ -6,7 +6,8 @@ interface User{
     password:string,
     userType:string,
     bloodType:string,
-    contact:string
+    contact:string,
+    status:string,
 }
 
 interface Donor extends User{
@@ -39,6 +40,11 @@ const userSchema = new Schema({
     contact:{
         type:String,
         required:true
+    },
+    status:{
+        type:String,
+        enum:["active","disabled"],
+        default:'active',
     }
 }, { 
     discriminatorKey: 'userType',

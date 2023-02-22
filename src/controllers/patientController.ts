@@ -9,8 +9,10 @@ export const patientLogin = async(req:Request,res:Response)=>{
         const {email,password} = req.body
         const user = await User.UserModel.findOne({email,password})
         if(!user){
-            res.status(400).send({success:false,message:"Invalid username or password"})
-            return
+            return res.status(400).send({success:false,message:"Invalid username or password"})
+        }
+        if(user.status === 'disabled'){
+            return res.status(401).send({success:false,message:"Your account has been disabled"})
         }
         res.status(200).send({success:true,JWT_SECRET,user})
     }catch(err){
@@ -89,15 +91,17 @@ export const deletePatient = async(req:Request,res:Response)=>{
         // res.status(200).send({success:true,message:"user successfully deleted"})
         const user = await User.UserModel.findById(id);
         if (!user) {
-            res.sendStatus(404);
+            res.status(404).send("User not found");
             return;
         }
         if (user.userType !== "patient") {
             res.sendStatus(400);
             return;
         }
-        await user.delete()
-        res.status(200).send({success:true,message:"user successfully deleted"})
+        // await user.delete()
+        user.status = 'disabled'
+        await user.save()
+        res.status(200).send({success:true,message:"user successfully disabled"})
     }catch(err){
         console.log(err)
         res.sendStatus(500)

@@ -13,6 +13,9 @@ export const donorLogin = async(req:Request,res:Response) =>{
             res.status(404).send({success:false,message:"Invalid username or password"})
             return
         }
+        if(user.status === 'disabled'){
+            return res.status(401).send({success:false,message:"Your account has been disabled"})
+        }
         res.status(200).send({success:true,JWT_SECRET,user})
     }catch(err){
         console.log(err)
@@ -75,8 +78,10 @@ export const deleteDonor = async(req:Request,res:Response)=>{
             res.sendStatus(400);
             return;
         }
-        await user.delete()
-        res.status(200).send({success:true,message:"User successfully deleted"})
+        // await user.delete()
+        user.status = 'disabled'
+        await user.save()
+        res.status(200).send({success:true,message:"user successfully disabled"})
     }catch(err){
         console.log(err)
     }
