@@ -31,6 +31,28 @@ export const getDonationRequests = async(req:Request,res:Response)=>{
     }
 }
 
+export const updateDonationRequestStatus = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id 
+        const donor = await DonorRequest.findById(id)
+        if(donor){
+            if(req.body.status === "approved"){
+                donor.status = "approved"
+                await donor.save()
+                return res.status(500).send("Donor request approved")
+            }
+            else if(req.body.status === "rejected"){
+                donor.status = "rejected"
+                await donor.save()
+                return res.status(500).send("Donor request rejected")
+            }
+        }
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const patientBloodRequest = async(req:Request,res:Response) =>{
     try{
         const patientId = req.params.id
@@ -59,6 +81,28 @@ export const getPatientsBloodRequestsBloodBank = async(req:Request,res:Response)
         const organizationId = req.params.id
         const requests = await PatientRequest.find({organizationId}).populate("patientId",["email","name","contact"])
         res.status(200).send(requests)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const updatePatientRequestStatus = async(req:Request,res:Response) =>{
+    try{
+        const id = req.params.id 
+        const request = await PatientRequest.findById(id)
+        if(request){
+            if(req.body.status === "approved"){
+                request.status = "approved"
+                await request.save()
+                return res.status(500).send("patient request approved")
+            }
+            else if(req.body.status === "rejected"){
+                request.status = "rejected"
+                await request.save()
+                return res.status(500).send("patient request rejected")
+            }
+        }
     }catch(err){
         console.log(err)
         res.sendStatus(500)

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import dotenv from 'dotenv'
 import mongoose, { Types, ObjectId } from "mongoose";
+import PatientRequest from "../models/PatientRequest";
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -49,6 +50,42 @@ export const getAllDonor = async(req:Request,res:Response)=>{
             ])
         }
         res.status(200).send(donor)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const patientDonor = async(req:Request,res:Response)=>{
+    try{
+        const patientId = req.params.id
+        const donors = await User.UserModel.aggregate([
+            {
+                $match:{
+                    userType:'donor'
+                }
+            }
+        ])
+        const patientRequest = await PatientRequest.find({patientId})
+        const data:any = []
+        donors.forEach((donor)=>{
+            const request = patientRequest.find((r)=>{
+                if(r.donorId && donor._id){
+               return r.donorId.toString() === donor._id.toString()
+            }})
+            if(request){
+                data.push({
+                    ...donor,
+                    status:request.status
+                })
+            }else{
+                data.push({
+                    ...donor,
+                    status:'open'
+                })
+            }
+        })
+        res.status(200).send(data)
     }catch(err){
         console.log(err)
         res.sendStatus(500)

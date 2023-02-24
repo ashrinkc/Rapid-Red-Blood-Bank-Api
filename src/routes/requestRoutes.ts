@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { bloodDonationRequests, patientBloodRequest, getDonationRequests, getPatientBloodRequestsDonor, getPatientsBloodRequestsBloodBank } from "../controllers/requestController";
+import { bloodDonationRequests, patientBloodRequest, getDonationRequests, getPatientBloodRequestsDonor, getPatientsBloodRequestsBloodBank, updateDonationRequestStatus, updatePatientRequestStatus } from "../controllers/requestController";
 
 const requestRoute = Router()
 
@@ -8,4 +8,6 @@ requestRoute.get('/getRequest/:id',getDonationRequests)
 requestRoute.post('/patientRequest/:id',patientBloodRequest)
 requestRoute.get('/patientRequestDonor/:id',getPatientBloodRequestsDonor)
 requestRoute.get('/patientRequestOrg/:id',getPatientsBloodRequestsBloodBank)
+requestRoute.post('/updateDonationRequest/:id',updateDonationRequestStatus)
+requestRoute.post('/updatePatientRequest/:id',updatePatientRequestStatus)
 export default requestRoute

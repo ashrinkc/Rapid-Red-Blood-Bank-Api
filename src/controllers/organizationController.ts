@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import User from "../models/User";
 import dotenv from 'dotenv'
 import DonorRequest from "../models/Request";
+import PatientRequest from "../models/PatientRequest";
 dotenv.config()
 
 const JWT_SECRET = process.env.JWT_SECRET
@@ -51,7 +52,7 @@ export const getAllOrganization = async(req:Request,res:Response)=>{
         organization.forEach((organization)=>{
             //find the corresponding request for the current organization
             const request = donorRequests.find((r)=>r.organizationId.toString() === organization._id.toString())
-        
+            
             //if there is a request add the status of the request
             if(request){
                 data.push({
@@ -86,6 +87,7 @@ export const updateOrganization = async(req:Request,res:Response)=>{
 
 export const getPatientOrganization = async(req:Request,res:Response)=>{
     try{
+        const patientId = req.query.id
         const organization = await User.UserModel.aggregate([
             {
                 $match:{
@@ -93,6 +95,29 @@ export const getPatientOrganization = async(req:Request,res:Response)=>{
                 }
             }
         ])
+        if(patientId){
+            const patientRequest = await PatientRequest.find({patientId})
+            const data:any = []
+            organization.forEach((organization:any)=>{
+                const request = patientRequest.find((r)=> {
+                    if (r.organizationId && organization._id) {
+                     return r.organizationId.toString() === organization._id.toString()
+                    }})
+                
+                if(request){
+                    data.push({
+                        ...organization,
+                        status:request.status
+                    })
+                }else{
+                    data.push({
+                        ...organization,
+                        status:'open'
+                    })
+                }
+            })
+            return res.status(200).send(data)
+        }
         res.status(200).send(organization)
     }catch(err){
         console.log(err)
@@ -118,14 +143,5 @@ export const deleteOrganization = async(req:Request,res:Response)=>{
         res.status(200).send({success:true,message:"user successfully disabled"})
     }catch(err){
         console.log(err)
-    }
-}
-
-export const updateStatus = async(req:Request,res:Response)=>{
-    try{
-        
-    }catch(err){
-        console.log(err)
-        res.sendStatus(500)
     }
 }
