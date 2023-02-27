@@ -5,6 +5,7 @@ import donationnRoute from "./donationRoute";
 import donorRoute from "./donorRoutes";
 import eventRoute from "./eventRoute";
 import feedbackRoute from "./feedbackRoute";
+import inventoryRoute from "./inventoryRoute";
 import messageRoute from "./messageRoute";
 import organizationRoute from "./organizationRoutes";
 import patientRoute from "./patientRoutes";
@@ -22,6 +23,7 @@ const routesSetup = (app:Application) =>{
     app.use('/api/events',eventRoute)
     app.use('/api/feedback',feedbackRoute)
     app.use('/api/donation',donationnRoute)
+    app.use('/api/inventory',inventoryRoute)
 }
 
 export default routesSetup
