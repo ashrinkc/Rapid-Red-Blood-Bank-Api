@@ -42,6 +42,6 @@ const bloodBankDataSchema = new Schema({
     timestamps:true
 })
 
-const bloodSchemaModel = mongoose.model<IBloodBankData>('BloodBankData',bloodBankDataSchema)
+const bloodBankDataSchemaModel = mongoose.model<IBloodBankData>('BloodBankData',bloodBankDataSchema)
 
-export default bloodSchemaModel
+export default bloodBankDataSchemaModel
