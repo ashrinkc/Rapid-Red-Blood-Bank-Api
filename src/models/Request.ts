@@ -10,6 +10,7 @@ interface Request{
     age:string
     gender:string
     status:string
+    orgStatus:string
 }
 
 const requestSchema = new Schema({
@@ -34,6 +35,11 @@ const requestSchema = new Schema({
         type:String
     },
     status:{
+        type:String,
+        default:'pending',
+        enum:['open','pending', 'approved', 'rejected']
+    },
+    orgStatus:{
         type:String,
         default:'pending',
         enum:['pending', 'approved', 'rejected']

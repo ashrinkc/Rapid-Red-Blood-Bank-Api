@@ -10,6 +10,7 @@ interface IPatientRequest{
     age:string
     about:string
     status:string
+    orgStatus:string
 }
 
 const patientBloodRequestSchema = new Schema({
@@ -44,7 +45,12 @@ const patientBloodRequestSchema = new Schema({
     status:{
         type:String,
         default:'pending',
-        enum:['pending','approved','rejected']
+        enum:['open','pending','approved','rejected']
+    },
+     orgStatus:{
+        type:String,
+        default:'pending',
+        enum:['pending', 'approved', 'rejected']
     }
 },{
     timestamps:true

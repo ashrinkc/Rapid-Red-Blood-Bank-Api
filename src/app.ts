@@ -3,6 +3,7 @@ import cors from 'cors'
 import routesSetup from './routes'
 import dotenv from 'dotenv'
 import connect from './config/dbconnection'
+import cron from './helpers/scheduler'
 const configureApplication = async() =>{
     dotenv.config()
     await connect()
@@ -12,12 +13,12 @@ const configureApplication = async() =>{
     const server = app.listen(5000,()=>{
         console.log("The application is running")
     })
+    cron
     const io = require("socket.io")(server,{
     cors:{
         origin:"http://localhost:3000"
     }
     })
-
     let users:any = []
 
     const addUser = (userId:any,socketId:any)=>{

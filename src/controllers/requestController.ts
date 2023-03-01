@@ -38,11 +38,13 @@ export const updateDonationRequestStatus = async(req:Request,res:Response)=>{
         if(donor){
             if(req.body.status === "approved"){
                 donor.status = "approved"
+                donor.orgStatus = "approved"
                 await donor.save()
                 return res.status(500).send("Donor request approved")
             }
             else if(req.body.status === "rejected"){
                 donor.status = "rejected"
+                donor.orgStatus = "rejected"
                 await donor.save()
                 return res.status(500).send("Donor request rejected")
             }
@@ -94,11 +96,13 @@ export const updatePatientRequestStatus = async(req:Request,res:Response) =>{
         if(request){
             if(req.body.status === "approved"){
                 request.status = "approved"
+                request.orgStatus = "approved"
                 await request.save()
                 return res.status(500).send("patient request approved")
             }
             else if(req.body.status === "rejected"){
                 request.status = "rejected"
+                request.orgStatus = "rejected"
                 await request.save()
                 return res.status(500).send("patient request rejected")
             }
