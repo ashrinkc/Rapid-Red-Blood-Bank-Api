@@ -5,6 +5,7 @@ export interface IEvent{
     organizationId: mongoose.Schema.Types.ObjectId,
     eventName:string,
     eventLocation:string,
+    locationLink:string,
     eventOrganizer:string,
     maxVolunteers:number,
     totalVolunteers:number,
@@ -23,6 +24,10 @@ const eventSchema = new Schema({
         required:true
     },
     eventLocation:{
+        type:String,
+        required:true
+    },
+    locationLink:{
         type:String,
         required:true
     },
