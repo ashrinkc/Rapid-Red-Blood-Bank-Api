@@ -2,14 +2,20 @@ import mongoose, { Schema } from "mongoose";
 import User from "./User";
 
 interface IDonation{
+    title:string
     requestedAmount:number,
     purpose:string
     donatedAmount:number,
     recipient:mongoose.Schema.Types.ObjectId,
-    donors:[]
+    donors:[],
+    donationTime:Date
 }
 
 const donationSchema = new Schema({
+    title:{
+        type:String,
+        required:true
+    },
     requestedAmount:{
         type:Number,
         required:true
@@ -24,6 +30,10 @@ const donationSchema = new Schema({
     recipient:{
         type:mongoose.Schema.Types.ObjectId,
         ref:User.PatientModel
+    },
+    donationTime:{
+        type:Date,
+        required:true
     },
     donors:[
         {
@@ -41,6 +51,8 @@ const donationSchema = new Schema({
             },
         }
     ]
+},{
+    timestamps:true
 })
 
 const donationModel = mongoose.model<IDonation>('Donation',donationSchema)

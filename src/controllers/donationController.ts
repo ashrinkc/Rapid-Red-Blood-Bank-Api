@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Donation from "../models/Donation";
+
 export const donationRequest = async(req:Request,res:Response)=>{
     try{
         await Donation.create(req.body)
@@ -30,6 +31,16 @@ export const donationPayment = async(req:Request,res:Response)=>{
             await donation.save()
         }
         return res.status(200).json("Payment Successfull")
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const getDonationById = async(req:Request,res:Response)=>{
+    try{
+        const donation = await Donation.findById(req.params.id)
+        res.status(201).send(donation)
     }catch(err){
         console.log(err)
         res.sendStatus(500)

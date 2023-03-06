@@ -97,6 +97,17 @@ export const getEventsById = async(req:Request,res:Response)=>{
     }
 }
 
+export const getEventByEventId = async(req:Request,res:Response)=>{
+    try{
+        const eventId = req.params.id 
+        const event = await Event.findById(eventId)
+        res.status(201).send(event)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const acceptVolunteer = async(req:Request,res:Response)=>{
     try{
         const volunteerId = req.params.id
