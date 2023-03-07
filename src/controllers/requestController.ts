@@ -112,3 +112,13 @@ export const updatePatientRequestStatus = async(req:Request,res:Response) =>{
         res.sendStatus(500)
     }
 }
+
+export const getPatientRequestById = async(req:Request,res:Response)=>{
+    try{
+        const data = await PatientRequest.findById(req.params.id)
+        res.status(200).send(data)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}

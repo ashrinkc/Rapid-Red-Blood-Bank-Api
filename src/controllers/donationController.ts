@@ -37,6 +37,16 @@ export const donationPayment = async(req:Request,res:Response)=>{
     }
 }
 
+export const getRecepient = async(req:Request,res:Response)=>{
+    try{
+        const donation = await Donation.find({recipient:req.params.id})
+        res.status(201).send(donation)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
 export const getDonationById = async(req:Request,res:Response)=>{
     try{
         const donation = await Donation.findById(req.params.id)
