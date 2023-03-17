@@ -22,6 +22,7 @@ export const getAllDonationRequest = async(req:Request,res:Response)=>{
 }
 
 export const donationPayment = async(req:Request,res:Response)=>{
+    console.log(req.body)
     const {amount,donationId} = req.body
     try{
         const donation:any = await Donation.findById(donationId)
@@ -51,6 +52,37 @@ export const getDonationById = async(req:Request,res:Response)=>{
     try{
         const donation = await Donation.findById(req.params.id)
         res.status(201).send(donation)
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const getDonorStats = async(req:Request,res:Response) =>{
+    try{
+        const donationId = req.params.id 
+        const topDonor = await Donation.aggregate([
+            {$match:{$_id:donationId}},
+            {
+                $unwind:"$donors",
+            },
+            {
+                $group:{
+                    _id:"$donors.userId",
+                    totalAmount:{$sum:"$donors.amount"},
+                },
+            },
+            {
+                $sort:{
+                    totalAmount:-1,
+                },
+            },
+            {
+                $limit:1,
+            },
+        ])
+        
+        console.log(topDonor)
     }catch(err){
         console.log(err)
         res.sendStatus(500)

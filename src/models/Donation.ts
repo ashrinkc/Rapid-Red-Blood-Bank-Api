@@ -33,7 +33,7 @@ const donationSchema = new Schema({
     },
     donationTime:{
         type:Date,
-        required:true
+        // required:true
     },
     donors:[
         {
