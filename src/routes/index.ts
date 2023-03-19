@@ -1,4 +1,5 @@
 import { Application, Request, Response } from "express";
+import { insertEvent } from "../helpers/googleEvents";
 import adminRoute from "./adminRoute";
 import conversationRoute from "./conversationRoute";
 import donationnRoute from "./donationRoute";
@@ -13,6 +14,9 @@ import requestRoute from "./requestRoutes"
 
 const routesSetup = (app:Application) =>{
     app.get('/',(req:Request,res:Response)=>res.send("Welcome to Rapid Red Blood Bank"))
+    app.post('/',async(req:Request,res:Response)=>{
+        await insertEvent('jj')
+    })
     app.use('/api/donor',donorRoute)
     app.use('/api/organization',organizationRoute)
     app.use('/api/patient',patientRoute)
