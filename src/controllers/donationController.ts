@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import Donation from "../models/Donation";
+import User from "../models/User";
 
 export const donationRequest = async(req:Request,res:Response)=>{
     try{
@@ -61,8 +63,22 @@ export const getDonationById = async(req:Request,res:Response)=>{
 export const getDonorStats = async(req:Request,res:Response) =>{
     try{
         const donationId = req.params.id 
+        // const mostRecentDonor = await Donation.findById(donationId,{donors:{$slice:-1}})
+        const donation:any = await Donation.findById(donationId)
+        const mostRecentDonor = await Donation.aggregate([
+            {
+                $match:{_id: donation._id}
+            },
+            {
+                $project:{
+                    _id:0,
+                    donors:{$slice:['$donors',-1]}
+                }
+            }
+        ])
+        
         const topDonor = await Donation.aggregate([
-            {$match:{$_id:donationId}},
+            {$match:{_id:donation._id}},
             {
                 $unwind:"$donors",
             },
@@ -80,9 +96,29 @@ export const getDonorStats = async(req:Request,res:Response) =>{
             {
                 $limit:1,
             },
-        ])
-        
-        console.log(topDonor)
+            {
+                $lookup:{
+                    from:"User.DonorModel",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "user",
+                },
+            },
+            {
+                $project:{
+                    _id:1,
+                    totalDonation:"$totalAmount",
+                    user:{$arrayElemAt:["$user",0]}
+                }
+            },
+        ]).exec()
+        const topDonorId = topDonor[0]._id
+        const latestDonorId = mostRecentDonor[0].donors[0].userId;
+        const topDonorInfo:any = await User.DonorModel.findById(topDonorId)
+        const latestDonorInfo:any = await User.DonorModel.findById(latestDonorId)
+        res.status(201).send({latest:latestDonorInfo.name,top:topDonorInfo.name})
+        // console.log(topDonorInfo.name)
+        // console.log(latestDonorInfo.name)
     }catch(err){
         console.log(err)
         res.sendStatus(500)
