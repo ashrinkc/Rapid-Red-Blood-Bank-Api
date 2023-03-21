@@ -7,6 +7,7 @@ interface IDonation{
     purpose:string
     donatedAmount:number,
     recipient:mongoose.Schema.Types.ObjectId,
+    img:{},
     donors:[],
     donationTime:Date
 }
@@ -34,6 +35,14 @@ const donationSchema = new Schema({
     donationTime:{
         type:Date,
         // required:true
+    },
+    img:{
+        public_id:{
+            type:String,
+        },
+        url:{
+            type:String
+        }
     },
     donors:[
         {

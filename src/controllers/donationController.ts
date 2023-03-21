@@ -1,11 +1,23 @@
 import { Request, Response } from "express";
 import mongoose from "mongoose";
+import cloudinary from "../helpers/cloudinary";
 import Donation from "../models/Donation";
 import User from "../models/User";
 
 export const donationRequest = async(req:Request,res:Response)=>{
     try{
-        await Donation.create(req.body)
+        if(req.body.img){
+        const result = await cloudinary.uploader.upload(req.body.img,{
+            folder:"products"
+        })
+        await Donation.create({...req.body,
+            img:{
+                public_id:result.public_id,
+                url: result.secure_url
+            }
+        })}else{
+            await Donation.create(req.body)
+        }
         res.status(200).send({success:true,message:"Donation request successfull"})
     }catch(err){
         console.log(err)
@@ -15,7 +27,7 @@ export const donationRequest = async(req:Request,res:Response)=>{
 
 export const getAllDonationRequest = async(req:Request,res:Response)=>{
     try{
-        const val = await Donation.find().populate('recipient',["email","name","contact"])
+        const val = await Donation.find().populate('recipient',["email","name","contact"]).sort({createdAt:-1})
         res.status(200).send(val)
     }catch(err){
         console.log(err)
@@ -42,7 +54,7 @@ export const donationPayment = async(req:Request,res:Response)=>{
 
 export const getRecepient = async(req:Request,res:Response)=>{
     try{
-        const donation = await Donation.find({recipient:req.params.id})
+        const donation = await Donation.find({recipient:req.params.id}).sort({createdAt:-1})
         res.status(201).send(donation)
     }catch(err){
         console.log(err)
