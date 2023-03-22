@@ -1,10 +1,30 @@
 import { Request, Response } from "express";
+import cloudinary from "../helpers/cloudinary";
+import { insertEvent } from "../helpers/googleEvents";
 import Event, { IEvent } from "../models/Events";
 import Volunteer from "../models/Volunteer";
 
 export const addEvents = async(req:Request,res:Response)=>{
     try{
-        await Event.create(req.body)
+        if(req.body.img){
+            const result = await cloudinary.uploader.upload(req.body.img,{
+                folder:"products"
+            })
+            await Event.create({...req.body,img:{
+                public_id:result.public_id,
+                url: result.secure_url
+            }})
+        }else{
+            await Event.create(req.body)
+        }
+        const data ={
+            eventName:req.body.eventName,
+            eventLocation:req.body.eventLocation,
+            eventDescription:req.body.eventDescription,
+            eventTime:req.body.eventTime,
+            eventEndTime:req.body.eventEndTime
+        }
+        await insertEvent(data)
         res.status(200).send("Event successfully created")
     }catch(err){
         console.log(err)
@@ -14,7 +34,7 @@ export const addEvents = async(req:Request,res:Response)=>{
 
 export const getAllEvents = async(req:Request,res:Response)=>{
     try{
-        const events = await Event.find()
+        const events = await Event.find().sort({createdAt:-1})
         // const eventsWithDateTime = event.map((event:any)=>{
         //     const date = event.eventTime.toISOString().split('T')[0]
         //     const time = event.eventTime.toISOString().split('T')[1].slice(0,-1)

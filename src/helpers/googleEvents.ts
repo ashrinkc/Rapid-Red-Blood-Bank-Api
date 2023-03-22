@@ -23,15 +23,15 @@ export const insertEvent = async(data:any)=>{
         sendUpdates:'all',
         sendNotifications:true,
         requestBody: {
-            summary: 'OK',
-            location: 'Balaju',
-            description: 'JJJJJ',
+            summary: data.eventName,
+            location: data.eventLocation,
+            description: data.eventDescription,
             start: {
-                dateTime: '2023-05-28T09:00:00-07:00',
+                dateTime: data.eventTime,
                 timeZone: 'Asia/Kathmandu',
             },
             end: {
-                dateTime: '2023-05-28T09:00:00-07:00',
+                dateTime: data.eventEndTime,
                 timeZone: 'Asia/Kathmandu',
         }}
     })

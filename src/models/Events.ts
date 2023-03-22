@@ -10,7 +10,9 @@ export interface IEvent{
     maxVolunteers:number,
     totalVolunteers:number,
     eventDescription:string,
-    eventTime:Date
+    eventTime:Date,
+    eventEndTime:Date,
+    img:{}
 }
 
 const eventSchema = new Schema({
@@ -48,7 +50,18 @@ const eventSchema = new Schema({
     eventTime:{
         type:Date,
         required:true
-    }
+    },
+    eventEndTime:{
+        type:Date
+    },
+    img:{
+        public_id:{
+            type:String,
+        },
+        url:{
+            type:String
+        }
+    },
 },{
     timestamps:true
 })
