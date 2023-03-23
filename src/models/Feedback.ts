@@ -30,6 +30,8 @@ const feedbackSchema = new Schema({
         type:String,
         required:true
     }
+},{
+    timestamps:true
 })
 
 const feedbackModel = mongoose.model<IFeedback>('Feedback',feedbackSchema)

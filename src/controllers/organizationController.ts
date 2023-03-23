@@ -14,6 +14,10 @@ export const organizationLogin = async(req:Request,res:Response) =>{
             res.status(404).send({success:false,message:"Invalid username or password"})
             return
         }
+         if(organization.userType !== "organization"){
+            res.sendStatus(400);
+            return;
+        }
         if(organization.status === 'disabled'){
             return res.status(401).send({success:false,message:"Your account has been disabled"})
         }
@@ -143,5 +147,28 @@ export const deleteOrganization = async(req:Request,res:Response)=>{
         res.status(200).send({success:true,message:"user successfully disabled"})
     }catch(err){
         console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const enableOrganization = async(req:Request,res:Response)=>{
+    try{
+        const id = req.params.id
+        const user = await User.UserModel.findById(id)
+        if(!user){
+            res.sendStatus(400);
+            return;
+        }
+        if(user.userType !== "organization"){
+            res.sendStatus(400);
+            return;
+        }
+        user.status = "active"
+        await user.save()
+        res.status(200).send({success:true,message:"user successfully enabled"})
+
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
     }
 }

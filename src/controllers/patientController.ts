@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import User from "../models/User";
 import dotenv from 'dotenv'
 dotenv.config()
@@ -7,9 +7,13 @@ const JWT_SECRET = process.env.JWT_SECRET
 export const patientLogin = async(req:Request,res:Response)=>{
     try{
         const {email,password} = req.body
-        const user = await User.UserModel.findOne({email,password})
+        const user = await User.UserModel.findOne({email,password})  
         if(!user){
             return res.status(400).send({success:false,message:"Invalid username or password"})
+        }
+        if (user.userType !== "patient") {
+            res.sendStatus(400);
+            return;
         }
         if(user.status === 'disabled'){
             return res.status(401).send({success:false,message:"Your account has been disabled"})
@@ -102,6 +106,28 @@ export const deletePatient = async(req:Request,res:Response)=>{
         user.status = 'disabled'
         await user.save()
         res.status(200).send({success:true,message:"user successfully disabled"})
+    }catch(err){
+        console.log(err)
+        res.sendStatus(500)
+    }
+}
+
+export const enablePatient = async(req:Request,res:Response)=>{
+    try{
+        console.log(req.params.id)
+        const id = req.params.id
+        const user = await User.UserModel.findById(id);
+        if (!user) {
+            res.status(404).send("User not found");
+            return;
+        }
+        if (user.userType !== "patient") {
+            res.sendStatus(400);
+            return;
+        }
+        user.status = 'active'
+        await user.save()
+        res.status(200).send({success:true,message:"user successfully enabled"})
     }catch(err){
         console.log(err)
         res.sendStatus(500)
