@@ -10,21 +10,23 @@ import inventoryRoute from "./inventoryRoute";
 import messageRoute from "./messageRoute";
 import organizationRoute from "./organizationRoutes";
 import patientRoute from "./patientRoutes";
-import requestRoute from "./requestRoutes"
+import requestRoute from "./requestRoutes";
 
-const routesSetup = (app:Application) =>{
-    app.get('/',(req:Request,res:Response)=>res.send("Welcome to Rapid Red Blood Bank"))
-    app.use('/api/donor',donorRoute)
-    app.use('/api/organization',organizationRoute)
-    app.use('/api/patient',patientRoute)
-    app.use('/api/admin',adminRoute)
-    app.use('/api/request',requestRoute)
-    app.use('/api/conversations',conversationRoute)
-    app.use('/api/message',messageRoute)
-    app.use('/api/events',eventRoute)
-    app.use('/api/feedback',feedbackRoute)
-    app.use('/api/donation',donationnRoute)
-    app.use('/api/inventory',inventoryRoute)
-}
+const routesSetup = (app: Application) => {
+  app.get("/", (req: Request, res: Response) =>
+    res.send("Welcome to Rapid Red Blood Bank")
+  );
+  app.use("/api/donor", donorRoute);
+  app.use("/api/organization", organizationRoute);
+  app.use("/api/patient", patientRoute);
+  app.use("/api/admin", adminRoute);
+  app.use("/api/request", requestRoute);
+  app.use("/api/conversations", conversationRoute);
+  app.use("/api/message", messageRoute);
+  app.use("/api/events", eventRoute);
+  app.use("/api/feedback", feedbackRoute);
+  app.use("/api/donation", donationnRoute);
+  app.use("/api/inventory", inventoryRoute);
+};
 
-export default routesSetup
+export default routesSetup;
