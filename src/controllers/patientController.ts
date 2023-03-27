@@ -2,9 +2,11 @@ import { Request, response, Response } from "express";
 import User from "../models/User";
 import dotenv from "dotenv";
 import cloudinary from "../helpers/cloudinary";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+// const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
 export const patientLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -23,7 +25,11 @@ export const patientLogin = async (req: Request, res: Response) => {
         .status(401)
         .send({ success: false, message: "Your account has been disabled" });
     }
-    res.status(200).send({ success: true, JWT_SECRET, user });
+    // res.status(200).send({ success: true, JWT_SECRET, user });
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+      expiresIn: "15m",
+    });
+    res.status(200).send({ success: true, token, user });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

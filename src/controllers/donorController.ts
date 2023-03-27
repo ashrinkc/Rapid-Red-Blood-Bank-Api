@@ -4,9 +4,10 @@ import dotenv from "dotenv";
 import mongoose, { Types, ObjectId } from "mongoose";
 import PatientRequest from "../models/PatientRequest";
 import cloudinary from "../helpers/cloudinary";
+import jwt from "jsonwebtoken";
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
 export const donorLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -26,6 +27,10 @@ export const donorLogin = async (req: Request, res: Response) => {
         .status(401)
         .send({ success: false, message: "Your account has been disabled" });
     }
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+      expiresIn: "15m",
+    });
+    // res.status(200).send({ success: true, token });
     res.status(200).send({ success: true, JWT_SECRET, user });
   } catch (err) {
     console.log(err);
