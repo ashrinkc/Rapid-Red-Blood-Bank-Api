@@ -31,3 +31,45 @@ export const contactMail = async (data: any) => {
     return false;
   }
 };
+
+export const bloodRequestMail = async (data: any) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.MAIL_USERNAME,
+      to: data.receiver,
+      subject: "Blood Request",
+      html: `<body style="background-color:#FFFFFF; color:#023243; font-size:15px; text-align: left"> 
+      <h1 style =" text-align: center; color:#023243;">Blood Request From ${data.name}</h1>
+      <p style="color:#023243; font-size:15px;"> Requested Blood Type: ${data.bloodType}</p>
+      <p style="color:#023243; font-size:15px;"> Age: ${data.age}</p>
+      <p style="color:#023243; font-size:15px;"> Gender: ${data.gender}</p>
+      <p style="color:#023243; font-size:15px;"> About: ${data.about}</p>
+       </b>  <br/><br/>
+    </body>`,
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+export const bloodRequestStatus = async (data: any) => {
+  try {
+    await transporter.sendMail({
+      from: data.sender,
+      to: data.receiver,
+      subject: "Blood Request",
+      html: `<body style="background-color:#FFFFFF; color:#023243; font-size:15px; text-align: left"> 
+      <h1 style =" text-align: center; color:#023243;">Blood Request Status</h1>
+      <p style="color:#023243; font-size:15px;"> Your request has been ${data.status} that you sent to ${data.name}</p>
+       </b>  <br/><br/>
+      
+    </body>`,
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};

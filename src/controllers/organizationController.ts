@@ -4,9 +4,13 @@ import dotenv from "dotenv";
 import DonorRequest from "../models/Request";
 import PatientRequest from "../models/PatientRequest";
 import cloudinary from "../helpers/cloudinary";
+import jwt from "jsonwebtoken";
+
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET;
+// const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
+
 export const organizationLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -26,7 +30,14 @@ export const organizationLogin = async (req: Request, res: Response) => {
         .status(401)
         .send({ success: false, message: "Your account has been disabled" });
     }
-    res.status(200).send({ success: true, JWT_SECRET, organization });
+    const token = jwt.sign(
+      { id: organization._id, email: organization.email },
+      JWT_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
+    res.status(200).send({ success: true, token, organization });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
@@ -39,13 +50,11 @@ export const organizationRegister = async (req: Request, res: Response) => {
       ...req.body,
       userType: "organization",
     });
-    res
-      .status(200)
-      .send({
-        success: true,
-        message: "Successfully registered",
-        organization,
-      });
+    res.status(200).send({
+      success: true,
+      message: "Successfully registered",
+      organization,
+    });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

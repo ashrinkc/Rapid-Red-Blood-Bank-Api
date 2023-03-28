@@ -31,7 +31,7 @@ export const donorLogin = async (req: Request, res: Response) => {
       expiresIn: "15m",
     });
     // res.status(200).send({ success: true, token });
-    res.status(200).send({ success: true, JWT_SECRET, user });
+    res.status(200).send({ success: true, token, user });
   } catch (err) {
     console.log(err);
     res.sendStatus(500);
