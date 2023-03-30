@@ -84,4 +84,29 @@ const OrganizationModel = UserModel.discriminator<Organization>(
 
 const PatientModel = UserModel.discriminator("patient", new Schema({}));
 
+// userSchema.pre("save",async function(next){
+//   let user = this as User
+//     if (!user.isModified("password")) {
+//       return next();
+//     }
+//     const salt = await bcrypt.genSalt(20);
+//     const hash = await bcrypt.hash(user.password, salt);
+//     user.password = hash;
+//     return next();
+// })
+// export const login = async (req: Request, res: Response) => {
+//   try {
+//     const user = await User.findOne({ email: req.body.email });
+//     !user && res.status(404).send("user not found");
+//     const validPassword = await bcrypt.compare(
+//       req.body.password,
+//       user!.password
+//     );
+//     !validPassword && res.status(400).json("Wrong password");
+
+//     res.status(200).json(user);
+//   } catch (err: any) {
+//     res.status(500).json(err);
+//   }
+// };
 export default { UserModel, DonorModel, OrganizationModel, PatientModel };

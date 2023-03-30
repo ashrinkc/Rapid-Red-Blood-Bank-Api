@@ -38,6 +38,16 @@ export const patientLogin = async (req: Request, res: Response) => {
 
 export const patientRegister = async (req: Request, res: Response) => {
   try {
+    const isPresent = await User.UserModel.findOne({
+      email: req.body.email,
+      userType: "patient",
+    });
+    if (isPresent) {
+      return res.status(400).send({
+        success: false,
+        message: "Email already in use",
+      });
+    }
     await User.UserModel.create({ ...req.body, userType: "patient" });
     res
       .status(200)

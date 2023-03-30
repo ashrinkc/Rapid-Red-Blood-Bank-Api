@@ -1,9 +1,13 @@
 import { Router } from "express";
-import { adminLogin, adminRegister } from "../controllers/adminController";
+import {
+  adminLogin,
+  adminRegister,
+  updateAdmin,
+} from "../controllers/adminController";
 
-const adminRoute = Router()
+const adminRoute = Router();
 
-adminRoute.post('/login',adminLogin)
-adminRoute.post('/register',adminRegister)
-
-export default adminRoute
+adminRoute.post("/login", adminLogin);
+adminRoute.post("/register", adminRegister);
+adminRoute.put("/:id", updateAdmin);
+export default adminRoute;

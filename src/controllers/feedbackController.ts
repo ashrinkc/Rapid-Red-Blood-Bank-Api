@@ -66,6 +66,7 @@ export const sendMail = async (req: Request, res: Response) => {
       email: req.body.email,
       message: req.body.message,
       name: req.body.firstname + req.body.lastname,
+      contact: req.body.contact,
     };
     const ress = await contactMail(data);
     console.log(ress);

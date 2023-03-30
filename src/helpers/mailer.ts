@@ -18,7 +18,9 @@ export const contactMail = async (data: any) => {
       subject: "Contact Us Response",
       html: `<body style="background-color:#FFFFFF; color:#023243; font-size:15px; text-align: left"> 
       <h1 style =" text-align: center; color:#023243;"> ${data.name}</h1>
-      <p style="color:#023243; font-size:15px;"> ${data.message}
+      <p style="color:#023243; font-size:15px;"> ${data.message}</p>
+      <p style="color:#023243; font-size:15px;">Contact: ${data.contact}</p>
+
        </b>  <br/><br/>
       
     <i>From,</i>,<br/>

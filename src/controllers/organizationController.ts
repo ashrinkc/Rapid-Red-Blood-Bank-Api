@@ -46,6 +46,16 @@ export const organizationLogin = async (req: Request, res: Response) => {
 
 export const organizationRegister = async (req: Request, res: Response) => {
   try {
+    const isPresent = await User.UserModel.findOne({
+      email: req.body.email,
+      userType: "organization",
+    });
+    if (isPresent) {
+      return res.status(400).send({
+        success: false,
+        message: "Email already in use",
+      });
+    }
     const organization = await User.UserModel.create({
       ...req.body,
       userType: "organization",
