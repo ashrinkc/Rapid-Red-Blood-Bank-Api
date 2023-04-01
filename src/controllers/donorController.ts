@@ -5,23 +5,31 @@ import mongoose, { Types, ObjectId } from "mongoose";
 import PatientRequest from "../models/PatientRequest";
 import cloudinary from "../helpers/cloudinary";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+
 dotenv.config();
 
 const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
 export const donorLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user = await User.UserModel.findOne({ email, password });
+    const user = await User.UserModel.findOne({ email });
     if (!user) {
-      res
-        .status(404)
-        .send({ success: false, message: "Invalid username or password" });
+      res.status(404).send({ success: false, message: "Invalid username" });
       return;
     }
+    const validPassword = await bcrypt.compare(password, user!.password);
+
+    if (!validPassword) {
+      res.status(404).send({ success: false, message: "Invalid password" });
+      return;
+    }
+
     if (user.userType !== "donor") {
       res.sendStatus(400);
       return;
     }
+
     if (user.status === "disabled") {
       return res
         .status(401)
@@ -50,7 +58,13 @@ export const donorRegister = async (req: Request, res: Response) => {
         message: "Email already in use",
       });
     }
-    await User.UserModel.create({ ...req.body, userType: "donor" });
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.password, salt);
+    req.body.password = hash;
+    const user = new User.UserModel({ ...req.body, userType: "donor" });
+    await user.save();
+
     res
       .status(200)
       .send({ success: true, message: "Donor successfully registered" });
@@ -136,6 +150,12 @@ export const updateDonor = async (req: Request, res: Response) => {
         message: "user picture successfully updated",
         don,
       });
+    }
+    // Hash the password
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(req.body.password, salt);
+      req.body.password = hash;
     }
     const user = await User.DonorModel.findByIdAndUpdate(id, req.body);
     res

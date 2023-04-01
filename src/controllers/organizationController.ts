@@ -5,7 +5,7 @@ import DonorRequest from "../models/Request";
 import PatientRequest from "../models/PatientRequest";
 import cloudinary from "../helpers/cloudinary";
 import jwt from "jsonwebtoken";
-
+import bcrypt from "bcrypt";
 dotenv.config();
 
 // const JWT_SECRET = process.env.JWT_SECRET;
@@ -14,11 +14,17 @@ const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
 export const organizationLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const organization = await User.UserModel.findOne({ email, password });
+    const organization = await User.UserModel.findOne({ email });
     if (!organization) {
-      res
-        .status(404)
-        .send({ success: false, message: "Invalid username or password" });
+      res.status(404).send({ success: false, message: "Invalid username" });
+      return;
+    }
+    const validPassword = await bcrypt.compare(
+      password,
+      organization!.password
+    );
+    if (!validPassword) {
+      res.status(404).send({ success: false, message: "Invalid password" });
       return;
     }
     if (organization.userType !== "organization") {
@@ -56,6 +62,10 @@ export const organizationRegister = async (req: Request, res: Response) => {
         message: "Email already in use",
       });
     }
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.password, salt);
+    req.body.password = hash;
     const organization = await User.UserModel.create({
       ...req.body,
       userType: "organization",
@@ -128,6 +138,12 @@ export const updateOrganization = async (req: Request, res: Response) => {
         message: "user picture successfully updated",
         org,
       });
+    }
+    // Hash the password
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(req.body.password, salt);
+      req.body.password = hash;
     }
     const user = await User.OrganizationModel.findByIdAndUpdate(id, req.body);
     res

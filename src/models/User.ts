@@ -1,5 +1,5 @@
 import mongoose, { model, Schema } from "mongoose";
-
+import bcrypt from "bcrypt";
 interface User {
   profilePic: string;
   email: string;
@@ -83,6 +83,8 @@ const OrganizationModel = UserModel.discriminator<Organization>(
 );
 
 const PatientModel = UserModel.discriminator("patient", new Schema({}));
+
+// Before saving the user, hash the password
 
 // userSchema.pre("save",async function(next){
 //   let user = this as User

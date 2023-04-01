@@ -3,6 +3,7 @@ import Admin from "../models/Admin";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import cloudinary from "../helpers/cloudinary";
+import bcrypt from "bcrypt";
 dotenv.config();
 
 // const JWT_SECRET = process.env.JWT_SECRET
@@ -11,11 +12,14 @@ const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
 export const adminLogin = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-    const user = await Admin.findOne({ username, password });
+    const user = await Admin.findOne({ username });
     if (!user) {
-      res
-        .status(404)
-        .send({ success: false, message: "Invalid username or password" });
+      res.status(404).send({ success: false, message: "Invalid username" });
+      return;
+    }
+    const validPassword = await bcrypt.compare(password, user!.password);
+    if (!validPassword) {
+      res.status(404).send({ success: false, message: "Invalid password" });
       return;
     }
     const token = jwt.sign({ id: user._id, email: user.username }, JWT_SECRET, {
@@ -47,6 +51,12 @@ export const updateAdmin = async (req: Request, res: Response) => {
         message: "user picture successfully updated",
         don,
       });
+    }
+    // Hash the password
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(req.body.password, salt);
+      req.body.password = hash;
     }
     const user = await Admin.findByIdAndUpdate(id, req.body);
     res

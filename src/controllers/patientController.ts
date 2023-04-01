@@ -3,6 +3,7 @@ import User from "../models/User";
 import dotenv from "dotenv";
 import cloudinary from "../helpers/cloudinary";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 dotenv.config();
 
 // const JWT_SECRET = process.env.JWT_SECRET;
@@ -10,11 +11,17 @@ const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
 export const patientLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-    const user = await User.UserModel.findOne({ email, password });
+    const user = await User.UserModel.findOne({ email });
+
     if (!user) {
       return res
         .status(400)
-        .send({ success: false, message: "Invalid username or password" });
+        .send({ success: false, message: "Invalid username" });
+    }
+    const validPassword = await bcrypt.compare(password, user!.password);
+    if (!validPassword) {
+      res.status(404).send({ success: false, message: "Invalid password" });
+      return;
     }
     if (user.userType !== "patient") {
       res.sendStatus(400);
@@ -48,6 +55,10 @@ export const patientRegister = async (req: Request, res: Response) => {
         message: "Email already in use",
       });
     }
+    // Hash the password
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(req.body.password, salt);
+    req.body.password = hash;
     await User.UserModel.create({ ...req.body, userType: "patient" });
     res
       .status(200)
@@ -97,6 +108,12 @@ export const updatePatient = async (req: Request, res: Response) => {
         message: "user picture successfully updated",
         pat,
       });
+    }
+    // Hash the password
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(req.body.password, salt);
+      req.body.password = hash;
     }
     const user = await User.PatientModel.findByIdAndUpdate(id, req.body);
     res
