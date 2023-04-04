@@ -167,13 +167,20 @@ export const getPatientOrganization = async (req: Request, res: Response) => {
     ]);
     if (patientId) {
       const patientRequest = await PatientRequest.find({ patientId });
+      const requestMap: any = {};
+
+      patientRequest.forEach((request) => {
+        requestMap[request?.organizationId?.toString()] = request;
+      });
+
       const data: any = [];
       organization.forEach((organization: any) => {
-        const request = patientRequest.find((r) => {
-          if (r.organizationId && organization._id) {
-            return r.organizationId.toString() === organization._id.toString();
-          }
-        });
+        // const request = patientRequest.find((r) => {
+        //   if (r.organizationId && organization._id) {
+        //     return r.organizationId.toString() === organization._id.toString();
+        //   }
+        // });
+        const request = requestMap[organization._id.toString()];
 
         if (request) {
           data.push({
@@ -187,6 +194,7 @@ export const getPatientOrganization = async (req: Request, res: Response) => {
           });
         }
       });
+
       return res.status(200).send(data);
     }
     res.status(200).send(organization);

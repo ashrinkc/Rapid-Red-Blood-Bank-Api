@@ -46,6 +46,7 @@ export const bloodRequestMail = async (data: any) => {
       <p style="color:#023243; font-size:15px;"> Age: ${data.age}</p>
       <p style="color:#023243; font-size:15px;"> Gender: ${data.gender}</p>
       <p style="color:#023243; font-size:15px;"> About: ${data.about}</p>
+      <p style="color:#023243; font-size:15px;"> Contact: ${data.contact}</p>
        </b>  <br/><br/>
     </body>`,
     });

@@ -82,6 +82,7 @@ export const patientBloodRequest = async (req: Request, res: Response) => {
       age: req.body.age,
       gender: req.body.gender,
       about: req.body.about,
+      contact: patient.contact,
     };
     const request = new PatientRequest({ patientId, ...req.body });
     await request.save();

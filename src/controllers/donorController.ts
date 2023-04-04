@@ -109,13 +109,21 @@ export const patientDonor = async (req: Request, res: Response) => {
       },
     ]);
     const patientRequest = await PatientRequest.find({ patientId });
+    const requestMap: any = {};
+
+    patientRequest.forEach((request) => {
+      requestMap[request?.donorId?.toString()] = request;
+    });
+
     const data: any = [];
+
     donors.forEach((donor) => {
-      const request = patientRequest.find((r) => {
-        if (r.donorId && donor._id) {
-          return r.donorId.toString() === donor._id.toString();
-        }
-      });
+      // const request = patientRequest.find((r) => {
+      //   if (r.donorId && donor._id) {
+      //     return r.donorId.toString() === donor._id.toString();
+      //   }
+      // });
+      const request = requestMap[donor._id.toString()];
       if (request) {
         data.push({
           ...donor,
