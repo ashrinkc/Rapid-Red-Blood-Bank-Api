@@ -1,6 +1,10 @@
 import { Response, Request } from "express";
 import mongoose from "mongoose";
-import { bloodRequestMail, bloodRequestStatus } from "../helpers/mailer";
+import {
+  bloodRequestDonorMail,
+  bloodRequestMail,
+  bloodRequestStatus,
+} from "../helpers/mailer";
 import PatientRequest from "../models/PatientRequest";
 import DonorRequest from "../models/Request";
 import User from "../models/User";
@@ -12,8 +16,23 @@ export const bloodDonationRequests = async (req: Request, res: Response) => {
     // const organization:any = await User.OrganizationModel.findById(req.body.organizationId.id)
     const donorId = req.params.id;
     const organizationId = req.query.organizationId;
+    const donor: any = await User.DonorModel.findById(donorId);
+    const user: any = await User.OrganizationModel.findById(organizationId);
+    const data = {
+      sender: donor.email,
+      receiver: user.email,
+      name: donor.name,
+      bloodType: donor.bloodType,
+      age: req.body.age,
+      gender: req.body.gender,
+      about: req.body.about,
+      contact: donor.contact,
+      medicalHistory: req.body.medicalHistory,
+      donationHistory: req.body.donationHistory,
+    };
     const request = new DonorRequest({ donorId, organizationId, ...req.body });
     await request.save();
+    await bloodRequestDonorMail(data);
     res
       .status(201)
       .send({ success: true, message: "Request sent successfully" });
@@ -43,7 +62,16 @@ export const updateDonationRequestStatus = async (
 ) => {
   try {
     const id = req.params.id;
-    const donor = await DonorRequest.findById(id);
+    const donor: any = await DonorRequest.findById(id);
+    const org: any = await User.UserModel.findById(donor.organizationId);
+    const don: any = await User.UserModel.findById(donor.donorId);
+    const data = {
+      receiver: don.email,
+      sender: org.email,
+      status: req.body.status,
+      name: org.name,
+    };
+    await bloodRequestStatus(data);
     if (donor) {
       if (req.body.status === "approved") {
         donor.status = "approved";

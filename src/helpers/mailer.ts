@@ -57,6 +57,29 @@ export const bloodRequestMail = async (data: any) => {
   }
 };
 
+export const bloodRequestDonorMail = async (data: any) => {
+  try {
+    await transporter.sendMail({
+      from: process.env.MAIL_USERNAME,
+      to: data.receiver,
+      subject: "Donor Blood Request",
+      html: `<body style="background-color:#FFFFFF; color:#023243; font-size:15px; text-align: left"> 
+      <h1 style =" text-align: center; color:#023243;">Blood Donation Request From ${data.name}</h1>
+      <p style="color:#023243; font-size:15px;"> Donation Blood Type: ${data.bloodType}</p>
+      <p style="color:#023243; font-size:15px;"> Age: ${data.age}</p>
+      <p style="color:#023243; font-size:15px;"> Gender: ${data.gender}</p>
+      <p style="color:#023243; font-size:15px;"> Donation History: ${data.donationHistory}</p>
+      <p style="color:#023243; font-size:15px;"> Medical History: ${data.medicalHistory}</p>
+       </b>  <br/><br/>
+    </body>`,
+    });
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
 export const bloodRequestStatus = async (data: any) => {
   try {
     await transporter.sendMail({

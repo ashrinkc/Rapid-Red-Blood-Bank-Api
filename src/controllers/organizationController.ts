@@ -93,15 +93,20 @@ export const getAllOrganization = async (req: Request, res: Response) => {
       },
     ]);
     const donorRequests = await DonorRequest.find({ donorId });
+    const requestMap: any = {};
+
+    donorRequests.forEach((request) => {
+      requestMap[request?.organizationId?.toString()] = request;
+    });
     //create array to store the organizations with status of the request
     const data: any = [];
     //loop through the organizations
     organization.forEach((organization) => {
       //find the corresponding request for the current organization
-      const request = donorRequests.find(
-        (r) => r.organizationId.toString() === organization._id.toString()
-      );
-
+      // const request = donorRequests.find(
+      //   (r) => r.organizationId.toString() === organization._id.toString()
+      // );
+      const request = requestMap[organization._id.toString()];
       //if there is a request add the status of the request
       if (request) {
         data.push({
