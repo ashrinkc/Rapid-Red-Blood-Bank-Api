@@ -165,7 +165,9 @@ export const updateDonor = async (req: Request, res: Response) => {
       const hash = await bcrypt.hash(req.body.password, salt);
       req.body.password = hash;
     }
-    const user = await User.DonorModel.findByIdAndUpdate(id, req.body);
+    const user = await User.DonorModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     res
       .status(200)
       .send({ success: true, message: "user successfully updated", user });

@@ -150,7 +150,9 @@ export const updateOrganization = async (req: Request, res: Response) => {
       const hash = await bcrypt.hash(req.body.password, salt);
       req.body.password = hash;
     }
-    const user = await User.OrganizationModel.findByIdAndUpdate(id, req.body);
+    const user = await User.OrganizationModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     res
       .status(200)
       .send({ success: true, message: "user successfully updated", user });
