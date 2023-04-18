@@ -4,10 +4,10 @@ import donorRequest from "../models/Request";
 import { CronJob } from "cron";
 
 const donorJob = new CronJob(
-  "1 * * * *",
+  "0 0 * * *",
   async () => {
     const date = new Date();
-    date.setDate(date.getMinutes() - 4); // substract 7 days from the current date
+    date.setDate(date.getDate() - 7); // substract 7 days from the current date
     const requests = await donorRequest.find({
       status: { $in: ["approved", "rejected"] },
       updatedAt: { $lt: date },
@@ -25,10 +25,10 @@ const donorJob = new CronJob(
 );
 
 const patientJob = new CronJob(
-  "*/2 * * * *",
+  "0 0 * * *",
   async () => {
     const date = new Date();
-    date.setDate(date.getMinutes() - 1);
+    date.setDate(date.getDate() - 7);
     const requests = await patientRequest.find({
       status: { $in: ["approved", "rejected"] },
       updatedAt: { $lt: date },
@@ -47,6 +47,7 @@ const patientJob = new CronJob(
 
 export default [donorJob, patientJob];
 
+// date.getMinutes() - 4;
 // Schedule a job to run every day at 12:00 AM
 // cron.schedule('0 0 * * *', async()=>{
 //     const date = new Date()

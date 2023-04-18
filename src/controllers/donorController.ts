@@ -10,6 +10,7 @@ import bcrypt from "bcrypt";
 dotenv.config();
 
 const JWT_SECRET = "sbvfhesdhjgfhjesdfhsdgfgajhf151212!@:}{ASDb";
+
 export const donorLogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -38,7 +39,6 @@ export const donorLogin = async (req: Request, res: Response) => {
     const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
       expiresIn: "15m",
     });
-    // res.status(200).send({ success: true, token });
     res.status(200).send({ success: true, token, user });
   } catch (err) {
     console.log(err);

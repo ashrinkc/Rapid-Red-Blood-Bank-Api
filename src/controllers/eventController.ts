@@ -38,15 +38,6 @@ export const addEvents = async (req: Request, res: Response) => {
 export const getAllEvents = async (req: Request, res: Response) => {
   try {
     const events = await Event.find().sort({ createdAt: -1 });
-    // const eventsWithDateTime = event.map((event:any)=>{
-    //     const date = event.eventTime.toISOString().split('T')[0]
-    //     const time = event.eventTime.toISOString().split('T')[1].slice(0,-1)
-    //     return{
-    //         ...event,
-    //         date,
-    //         time
-    //     }
-    // })
     const volunteerId = req.query.id;
     const volunteerRequest = await Volunteer.find({ volunteerId });
     const data: any = [];
